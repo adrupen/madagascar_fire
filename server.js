@@ -8,7 +8,7 @@ var today = new Date();
 
 server = http.createServer( function(req, res) {
 
-	res.setHeader("Access-Control-Allow-Origin", "http://localhost:8089");
+	res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:8080");
 
     console.dir(req.param);
 
@@ -42,18 +42,11 @@ server = http.createServer( function(req, res) {
 			        return console.log(err);
 			    }
 			    console.log("./py/ranger_report.csv was saved");
-			    execSync("python ./py/upload_arduino.py ./py/ranger_report.csv "+GEOSS_url);
+			    var result = execSync("python ./py/upload_arduino.py ./py/ranger_report.csv "+GEOSS_url, {stdio:[0,1,2]});
 			});
         });
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end('post received');
-    }
-    else
-    {
-        console.log("GET");
-        var html = fs.readFileSync('index.html');
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end(html);
     }
 
 });

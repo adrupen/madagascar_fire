@@ -1,35 +1,997 @@
 <!DOCTYPE html>
-<html>
+
+<html class="">
 <head>
-	<title>hej</title>
-</head>
-<body>
-<script type="text/javascript">
-	function sendToGEOSS(values){
-		var http = new XMLHttpRequest();
-		var url = "http://127.0.0.1:8089";
-		var params = "";
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Fire report app</title>
 
-		for (var param in values) {
-		    if (values.hasOwnProperty(param)) {
-		        params += "&" + param + "=" + values[param];
-		    }
-		}
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
 
-		http.open("POST", url, true);
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.0/leaflet.draw.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.0/leaflet.draw.js"></script>
 
-		//Send the proper header information along with the request
-		http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.min.css">
 
-		http.onreadystatechange = function() {//Call a function when the state changes.
-		    if(http.readyState == 4 && http.status == 200) {
-		        console.log(http.responseText);
-		    }
-		}
-		console.log("params sent: "+params);
-		http.send(params);
-	}
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
 
-</script>
+    <!-- Custom -->
+    <link rel="stylesheet" href="./css/cards.css">
+
+    
+
+    
+
+    <style type="text/css">
+      body { overflow: hidden; }
+
+      .navbar-offset { margin-top: 50px; }
+      #map { position: absolute; top: 50px; bottom: 0px; left: 0px; right: 0px; }
+      #map .ol-zoom { font-size: 1.2em; }
+
+      .zoom-top-opened-sidebar { margin-top: 5px; }
+      .zoom-top-collapsed { margin-top: 45px; }
+
+      .mini-submenu{
+        display:none;  
+        background-color: rgba(255, 255, 255, 0.46);
+        border: 1px solid rgba(0, 0, 0, 0.9);
+        border-radius: 4px;
+        padding: 9px;  
+        /*position: relative;*/
+        width: 42px;
+        text-align: center;
+      }
+
+      .mini-submenu-left {
+        position: absolute;
+        top: 60px;
+        left: .5em;
+        z-index: 40;
+      }
+      .mini-submenu-right {
+        position: absolute;
+        top: 60px;
+        right: .5em;
+        z-index: 40;
+      }
+
+      #map { z-index: 35; }
+
+      .sidebar { z-index: 45; }
+
+      .main-row { position: relative; top: 0; }
+
+      .mini-submenu:hover{
+        cursor: pointer;
+      }
+
+      .slide-submenu{
+        background: rgba(0, 0, 0, 0.45);
+        display: inline-block;
+        padding: 0 8px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 19px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 11px;
+  width: 11px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #e45353;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+    
+    #search-term-input {
+        border-radius: 4px;
+        font-size: 14px;
+        padding: 10px;
+        color: #666;
+        background: #e5e5e5;
+        border: 0;
+        padding-left: 40px;
+        width: 100%;
+    }
+    
+    #headerSearch {
+        background: url(https://a-v2.sndcdn.com/assets/images/header/search-dbfe5c.svg) 0 0 no-repeat;
+        background-size: 15px 15px;
+        background-position: center;
+        width: 40px;
+        height: 40px;
+        border: 0;
+        padding: 0;
+        position: absolute;
+        z-index: 1000;
+    }
+    
+    #results-div {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        height: 50px
+    }
+    
+    #report-title-select {
+        padding: 3px;
+        display: inline-block;
+        margin-top: 10px;
+        width: 100%
+    }
+    
+    #prev-button {
+        margin-left: 25px;
+    }
+    
+    #report-title-select option {
+        max-width: 350px;
+    }
+
+    #yearSlider .slider-selection {
+  background: #BABABA;
+}
+
+.slider-handle{
+  width:60px;
+  height:60px;
+  line-height:60px;
+  text-align:center;
+  color:white;
+  top:-20px;
+}
+
+    </style>
+
+
+
+  
+
+    
+    
+
+
+    <script type="text/javascript" src="./js/ol.js"></script>
+    <script type="text/javascript" src="./js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+
+
+    <script src="https://api.geodab.eu/download/giapi/lib/min/giapi.min.js" type="text/javascript"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js'></script>
+
+
+  
+
+
+
+
+
+
+
+
+    <script type="text/javascript">
+
+      var params = {
+        location: "",
+        fire_magnitude: "",
+        flora_damage: "",
+        fauna_damage: ""
+      };
+
+      function sendToGEOSS(values){
+        var http = new XMLHttpRequest();
+        var url = "http://127.0.0.1:8089";
+        var params = "";
+
+        for (var param in values) {
+            if (values.hasOwnProperty(param)) {
+                params += "&" + param + "=" + values[param];
+            }
+        }
+
+        http.open("POST", url, true);
+
+        //Send the proper header information along with the request
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        http.onreadystatechange = function() {//Call a function when the state changes.
+            if(http.readyState == 4 && http.status == 200) {
+                console.log(http.responseText);
+            }
+        };
+        console.log("params sent: "+params);
+        http.send(params);
+      }
+
+      function applyMargins() {
+        var leftToggler = $(".mini-submenu-left");
+        var rightToggler = $(".mini-submenu-right");
+        if (leftToggler.is(":visible")) {
+          $("#map .ol-zoom")
+            .css("margin-left", 0)
+            .removeClass("zoom-top-opened-sidebar")
+            .addClass("zoom-top-collapsed");
+        } else {
+          $("#map .ol-zoom")
+            .css("margin-left", $(".sidebar-left").width())
+            .removeClass("zoom-top-opened-sidebar")
+            .removeClass("zoom-top-collapsed");
+        }
+        if (rightToggler.is(":visible")) {
+          $("#map .ol-rotate")
+            .css("margin-right", 0)
+            .removeClass("zoom-top-opened-sidebar")
+            .addClass("zoom-top-collapsed");
+        } else {
+          $("#map .ol-rotate")
+            .css("margin-right", $(".sidebar-right").width())
+            .removeClass("zoom-top-opened-sidebar")
+            .removeClass("zoom-top-collapsed");
+        }
+      }
+
+      function isConstrained() {
+        return $("div.mid").width() == $(window).width();
+      }
+
+      function applyInitialUIState() {
+        if (isConstrained()) {
+          $(".sidebar-left .sidebar-body").fadeOut('slide');
+          $(".sidebar-right .sidebar-body").fadeOut('slide');
+          $('.mini-submenu-left').fadeIn();
+          $('.mini-submenu-right').fadeIn();
+        }
+      }
+
+      $(document).ready(function() {
+
+
+        $('.sidebar-left .slide-submenu').on('click',function() {
+          var thisEl = $(this);
+          thisEl.closest('.sidebar-body').fadeOut('slide',function(){
+            $('.mini-submenu-left').fadeIn();
+            applyMargins();
+          });
+        });
+
+        $('.mini-submenu-left').on('click',function() {
+          var thisEl = $(this);
+          $('.sidebar-left .sidebar-body').toggle('slide');
+          thisEl.hide();
+          applyMargins();
+        });
+
+        $('.sidebar-right .slide-submenu').on('click',function() {
+          var thisEl = $(this);
+          thisEl.closest('.sidebar-body').fadeOut('slide',function(){
+            $('.mini-submenu-right').fadeIn();
+            applyMargins();
+          });
+        });
+
+        $('.mini-submenu-right').on('click',function() {
+          var thisEl = $(this);
+          $('.sidebar-right .sidebar-body').toggle('slide');
+          thisEl.hide();
+          applyMargins();
+        });
+
+        $(window).on("resize", applyMargins);
+
+  var map = L.map('map', {
+    maxZoom: 17,
+    zoomControl: false,
+    attributionControl: false
+  }).setView([-19.295335049096263,46.57384179999997], 6);
+
+var mapgrey = L.tileLayer('http://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
+      });
+
+var mapsat = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+      id: 'christianlanger.lin45e75',
+      accessToken: 'pk.eyJ1IjoiY2hyaXN0aWFubGFuZ2VyIiwiYSI6InJOMFAxS00ifQ.tt_H4EfT3ccRSPrkD0KKRQ'
+  }).addTo(map);
+
+var baseLayers = {
+      "Grayscale": mapgrey,
+      "Satellite": mapsat
+  };
+
+var layerSwitcher = L.control.layers(baseLayers, null, {
+    collapsed: false,
+    position: 'bottomright'
+}).addTo(map);
+
+  applyInitialUIState();
+  applyMargins();
+      
+
+
+// Create group for your layers and add it to the map
+  var layerGroup = L.layerGroup().addTo(map);
+
+// MODIS active fires last 24 hrs
+ var modisfire24 = L.tileLayer.wms('https://firms.modaps.eosdis.nasa.gov/wms/?', {
+    layers: 'fires_viirs_24',
+    zIndex: 1020,
+    format: 'png'
+    });
+
+   $("#modisfire24").click(function() {
+      if(document.getElementById('modisfire24').checked){
+        layerGroup.addLayer(modisfire24);
+      } else{
+        layerGroup.removeLayer(modisfire24);
+        }
+  }); 
+
+ // MODIS active fires last 48 hrs
+ var modisfire48 = L.tileLayer.wms('https://firms.modaps.eosdis.nasa.gov/wms/?', {
+    layers: 'fires_viirs_48',
+    zIndex: 1020,
+    format: 'png'
+    });
+
+    $("#modisfire48").click(function() {
+      if(document.getElementById('modisfire48').checked){
+        layerGroup.addLayer(modisfire48);
+      } else{
+        layerGroup.removeLayer(modisfire48);
+        }
+  });
+
+ // MODIS active fires last 72 hrs
+ var modisfire72 = L.tileLayer.wms('https://firms.modaps.eosdis.nasa.gov/wms/?', {
+    layers: 'fires_viirs_72',
+    zIndex: 1020,
+    format: 'png'
+    });
+
+    $("#modisfire72").click(function() {
+      if(document.getElementById('modisfire72').checked){
+        layerGroup.addLayer(modisfire72);
+      } else{
+        layerGroup.removeLayer(modisfire72);
+        }
+  });
+
+var flameIcon = L.icon({
+    iconUrl: 'img/flame.png',
+
+    iconSize:     [38, 38], // size of the icon
+    shadowSize:   [50, 64], // size of the shadow
+    iconAnchor:   [22, 34], // point of the icon which will correspond to marker's location
+    shadowAnchor: [4, 62],  // the same for the shadow
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+
+
+// Initialise the FeatureGroup to store editable layers
+var editableLayers = new L.FeatureGroup();
+map.addLayer(editableLayers);
+
+// Initialise the draw control and pass it the FeatureGroup of editable layers
+var options = {
+    position: 'bottomright',
+    draw: {
+        polyline: false,
+        polygon: false,
+        circle: false,
+        rectangle: false,
+        marker: {
+          icon: flameIcon
+        }
+        },
+    edit: {
+        featureGroup: editableLayers 
+    }
+};
+
+var drawControl = new L.Control.Draw(options);
+
+map.addControl(drawControl);
+  
+map.on('draw:created', function (e) {
+    var type = e.layerType,
+        layer = e.layer;
+
+    editableLayers.addLayer(layer);
+
+    if (type === 'marker') {
+
+      var curPos = layer.getLatLng(); 
+      document.querySelector('#latlon').value = "(" + curPos.lat + "," + curPos.lng + ")";
+      //document.querySelector('#lon').value = curPos.lng;
+
+    }
+
+});
+
+
+
+    var dab = GIAPI.DAB('https://api.geodab.eu/dab');
+
+
+    var paginator;
+
+    var overlays = {};
+
+
+
+
+    var beforeSearch = function(msg) {
+
+        layerGroup.clearLayers();
+
+        $('#report-title-select').empty();
+        $('#report-title-ul').empty();
+        //$('#add-layer-button').attr('disabled', 'disabled');
+        $('#search-button').attr('disabled', 'disabled');
+        $('#prev-button').attr('disabled', 'disabled');
+        $('#next-button').attr('disabled', 'disabled');
+
+        $('#info-label').html(msg);
+    };
+
+
+    var afterSearch = function(resultSet, paginator) {
+
+        var info = '<p><br><b>' + resultSet.size + '</b> datasets found</p>';
+
+        $('#search-button').removeAttr('disabled');
+
+        if (resultSet.size) {
+
+            info += '<p>Showing results ' + resultSet.start + ' to ' + (resultSet.start + resultSet.pageSize - 1) + '</p>';
+
+            //$('.add-layer-button').removeAttr('disabled');
+
+            if (paginator.prev()) {
+                $('#prev-button').removeAttr('disabled');
+            }
+
+            if (paginator.next()) {
+                $('#next-button').removeAttr('disabled');
+            }
+        }
+
+        $('#info-label').html(info);
+
+
+    };
+
+
+    // Search GEO DAB
+    // by click search default button
+
+    $('#search-button').click(function() {
+
+        beforeSearch('Fetching datasets ...');
+
+        var searchTerm = $('#search-term-input').val();
+        var constraints = {};
+
+        if (searchTerm) {
+            constraints.what = searchTerm;
+        }
+
+
+        var options = {
+            "pageSize": 10
+        };
+
+        dab.discover(onResponse, constraints, options);
+
+    });
+
+
+    // by click loupe button
+    $('#headerSearch').click(function() {
+
+        beforeSearch('Searching GEOSS ...');
+
+        var searchTerm = $('#search-term-input').val();
+       
+
+        // discover constraints
+        var constraints = {};
+
+
+        
+        if (searchTerm) {
+            constraints.what = searchTerm;
+        }
+
+
+        // set page size
+        var options = {
+            "pageSize": 10
+        };
+
+
+        // start discover
+        dab.discover(onResponse, constraints, options);
+
+
+    });
+
+
+
+
+
+    $('#prev-button').click(function() {
+
+        beforeSearch('Getting previous results ...');
+        paginator.prev(onResponse, true);
+    });
+
+
+    $('#next-button').click(function() {
+
+        beforeSearch('Getting next results ...');
+        paginator.next(onResponse, true);
+    });
+
+
+
+for ( var i = 0; i < overlays.length; i++) {
+
+      $("#geoss-" + i).click(function() {
+      if(document.getElementById("geoss-" + i).checked){
+        layerGroup.addLayer(overlays[i]);
+      } else{
+        layerGroup.removeLayer(overlays[i]);
+        }
+  })
+
+};
+    
+
+     
+
+
+
+
+    // defines discover response callback function
+    var onResponse = function(response) {
+
+
+        // retrieves the result set
+        // only one result set is expected (discover not expanded) 
+        var resultSet = response[0];
+
+
+        if (resultSet.error) {
+            console.log("Error occurred: " + resultSet.error);
+            return;
+        }
+
+
+        // retrieves the paginator  
+        paginator = resultSet.paginator;
+
+        afterSearch(resultSet, paginator);
+
+        // document.writeln(paginator);
+
+        // prints the result set
+        // document.writeln("<h3>- Result set -</h3>");
+        // document.writeln("start:"+resultSet.start+"<br>"); 
+        // document.writeln("size:"+resultSet.size+"<br>"); 
+        // document.writeln("pageCount:"+resultSet.pageCount+"<br>"); 
+        // document.writeln("pageIndex:"+resultSet.pageIndex+"<br>"); 
+        // document.writeln("pageSize:"+resultSet.pageSize+"<br>"); 
+
+
+        // the current paginator page (the first of the result set)
+        var page = paginator.page();
+
+        // printing page nodes
+        // document.writeln("<h3>- Nodes of first result set page-</h3>"); 
+        // document.writeln("<pre>"); 
+
+
+        overlays = [];
+
+
+
+
+        while (page.hasNext()) {
+
+
+            // retrieving the next page node
+            var node = page.next();
+
+
+            // retrieving the node report
+            var report = node.report();
+
+            //document.writeln(JSON.stringify(report,null,4));
+
+            //$('#report-title-select').append('<option value="' + overlays.length + '">' + report.title + '</option>');
+
+
+            $('#report-title-ul').append('<li style="display:block" value="geoss-' + overlays.length + '"><div><div class="card">' + '<img class="card-img-top" src="'+ report.overview + '" alt="image thumbnail not found"' + '"><div class="card-block"><h4 class="card-title">'+ report.title +'</h4><div class="card-text">'+ report.description +'</div></div><div class="card-footer"><span><div class="checkbox" style="padding:0;margin-bottom:10px"><label class="switch"><input id="geoss-' + overlays.length + '" type="checkbox"><span class="slider round"></span></label></div></span></div></div></div></li><div>&nbsp;</div>');
+
+
+
+
+
+
+            var url = report.online[0].url;
+            var name = report.online[0].name;
+
+
+
+            var geosslayer = L.tileLayer.wms(url, {
+                format: 'image/png',
+                transparent: true,
+                layers: name,
+                zIndex: 1020,
+                title: name
+            });
+
+
+
+            overlays.push(geosslayer);
+
+
+
+ 
+
+
+        }
+
+
+    };
+  
+
+  }); 
+
+
+
+    
+
+    </script>
+
+
+
+
+  <link type="text/css" rel="stylesheet" charset="UTF-8" href="./css/translateelement.css"></head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <img src="img/lemur-fire.png" style="margin:10px;width:30px;float:left" title="Madagascar">
+            <a class="navbar-brand" href="./index.htm">Report your Fire!</a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+<!--           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Link</a></li>
+              <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Link</a></li>
+              <li class="dropdown">
+                <a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Action</a></li>
+                  <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Another action</a></li>
+                  <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Something else here</a></li>
+                  <li class="divider"></li>
+                  <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Separated link</a></li>
+                  <li class="divider"></li>
+                  <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">One more separated link</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search">
+              </div>
+              <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Link</a></li>
+              <li class="dropdown">
+                <a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Action</a></li>
+                  <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Another action</a></li>
+                  <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Something else here</a></li>
+                  <li class="divider"></li>
+                  <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/3-column/index.html#">Separated link</a></li>
+                </ul>
+              </li>
+            </ul>
+            </div> --><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+          </nav>
+        </div>
+      
+      <div class="navbar-offset"></div>
+      <div id="map"></div>
+      <div class="row main-row">
+        <div class="col-sm-4 col-md-3 sidebar sidebar-left pull-left">
+          <div class="panel-group sidebar-body" id="accordion-left">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" href="./index.html#layers">
+                    <i class="fa fa-list-alt" style="padding-right:10px"></i>Active Fires
+                  </a>
+                  <span class="pull-right slide-submenu">
+                    <i class="fa fa-chevron-left"></i>
+                  </span>
+                </h4>
+              </div>
+
+              <div id="layers" class="panel-collapse collapse in">
+                
+                <div class="panel-body list-group">
+
+                    <div class="checkbox" style="padding:0;margin-bottom:10px">
+                      <label class="switch">
+                        <input id="modisfire24" type="checkbox">
+                          <span class="slider round"></span>
+                        </label><span style="position:absolute;padding-left:20px">Last 24hrs</span>
+                    </div>
+
+                    <div class="checkbox" style="padding:0;margin-bottom:10px">
+                      <label class="switch">
+                        <input id="modisfire48" type="checkbox">
+                          <span class="slider round"></span>
+                        </label><span style="position:absolute;padding-left:20px">Last 48hrs</span>
+                    </div>
+
+                    <div class="checkbox" style="padding:0;margin-bottom:10px">
+                      <label class="switch">
+                        <input id="modisfire72" type="checkbox">
+                          <span class="slider round"></span>
+                        </label><span style="position:absolute;padding-left:20px">Last 72hrs</span>
+                    </div>
+
+
+                </div>
+
+              </div>
+
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" href="./index.html#properties">
+                    <i class="fa fa-list-alt" style="padding-right:10px"></i>Search GEOSS Datasets
+                  </a>
+                </h4>
+              </div>
+
+              <div id="properties" class="panel-collapse collapse in">
+                <div class="panel-body">
+                  
+                  <div id="controls-div">
+
+                <button id="headerSearch" type="button"></button>
+                <input type="text" placeholder="Search for any data..." id="search-term-input"></input>
+                <div style="margin-top:10px">
+                  <button type="button" class="btn btn-default" id="search-button" title="Start Search">Start search</button>
+                  <button type="button" class="btn btn-default" id="prev-button" title="Prev" disabled><< Prev</button>
+                  <button type="button" class="btn btn-default" id="next-button" title="Next" disabled>Next >></button>
+                </div>
+                            
+
+                            <div id="results-div" style="overflow:auto;height:400px">
+
+                                <div id="info-label-div">
+                                    <label id="info-label"></label>
+                                </div>
+
+                                <div id="select-div">
+                                    <!-- <select id="report-title-select" class="form-control"></select>
+                                    <p><br><button type="button" class="btn btn-default" id="add-layer-button" title="Add Layer" disabled>Add Layer to map</button></p> -->
+
+                                    <ul id="report-title-ul" style="padding:0"></ul>
+                                    
+                                </div>
+
+                            </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 col-md-6 mid"></div>
+        <div class="col-sm-4 col-md-3 sidebar sidebar-right pull-right">
+          <div class="panel-group sidebar-body" id="accordion-right">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" href="./index.html#taskpane">
+                    <i class="fa fa-tasks" style="padding-right:10px"></i>Report fire
+                  </a>
+                  <span class="pull-right slide-submenu">
+                    <i class="fa fa-chevron-right"></i>
+                  </span>
+                </h4>
+              </div>
+              <div id="taskpane" class="panel-collapse collapse in">
+                <div class="panel-body">
+                  <form>
+                    <div class="form-group">
+                      <label>Name</label>
+                      <input type="text" class="form-control" id="name" placeholder="Ranger Herizo">
+                    </div>
+                    <div class="form-group">
+                      <label>Location</label>
+                      <input type="text" class="form-control" id="latlon" placeholder="Latitude/Longitude">
+                    </div>
+
+                    <div class="form-group">
+                      <label>Fire Magnitude</label>
+                      
+                      <input id="yearSlider" data-slider-id='yearSlider' type="range" />
+                      <span>
+                        <img src="img/flame.png" style="margin:10px;width:20px;float:left" title="Madagascar">
+                        <img src="img/flame.png" style="margin:10px;width:35px;float:right" title="Madagascar">
+                      </span>
+                      
+                    </div>
+                    <br><br>
+
+                    <div class="form-group">
+                      <label>Flora Damage</label>
+                      
+                      <input id="floraSlider" data-slider-id='floraSlider' type="range" />
+                      <span>
+                        <img src="img/forest.png" style="margin:10px;width:20px;float:left" title="Madagascar">
+                        <img src="img/forest.png" style="margin:10px;width:35px;float:right" title="Madagascar">
+                      </span>
+                      
+                    </div>
+
+                    <br><br>
+
+                    <div class="form-group">
+                      <label>Fauna Damage</label>
+                      
+                      <input id="faunaSlider" data-slider-id='faunaSlider' type="range" />
+                      <span>
+                        <img src="img/lemur.png" style="margin:10px;width:20px;float:left" title="Madagascar">
+                        <img src="img/lemur.png" style="margin:10px;width:35px;float:right" title="Madagascar">
+                      </span>
+                      
+                    </div>
+                    <br><br>
+                    <button id="sendBtn">Send</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mini-submenu mini-submenu-left pull-left">
+        <i class="fa fa-list-alt"></i>
+      </div>
+      <div class="mini-submenu mini-submenu-right pull-right">
+        <i class="fa fa-tasks"></i>
+      </div>
+
+<!-- Modal -->
+  <div class="modal show" id="myModalDisclaimer" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" onclick = "$('.modal').removeClass('show').addClass('fade');">&times;</button>
+          <h4 class="modal-title" style="text-align:center">Welcome to the Fire Report App</h4>
+        </div>
+        <div class="modal-body">
+          <div style="text-align: center">
+            <img src="img/lemur-fire.png" style="margin:10px;width:250px;" title="Madagascar">
+            <h5>Biodiversity Observations for a better future</h5><br>
+            <p style="color:#999;font-size:12px">© Christian Langer | Joakim.Adrup</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" onclick = "$('.modal').removeClass('show').addClass('fade');">Let´s Go!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    
+  
 </body>
+
 </html>
+
+
+    <script>
+      $("#sendBtn").on("click", function(){
+        params.location = $("#latlon").val();
+        params.fire_magnitude = $("#yearSlider").val();
+        params.flora_damage = $("#floraSlider").val();
+        params.fauna_damage = $("#faunaSlider").val();
+        sendToGEOSS(params);
+      });
+      
+$(document).ready(function(){
+  $("#yearSlider").slider({step: 20000, min: 0, max: 200000, value:0})
+  $("#yearSlider .slider-handle").text($("input#yearSlider").val());
+});
+
+$("#yearSlider").on("slide", function(slideEvt) {
+  $("#yearSlider .slider-handle").text(slideEvt.value);
+});
+
+
+
+
+    </script>
