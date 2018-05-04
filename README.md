@@ -7,8 +7,10 @@ Input parameters are provided as sliders with pictograms for easy understanding 
 
 Data collected is uploaded to the GEOSS platform, allowing anyone to take part in the information.
 
-To install run
+To install & run
 ```javascript
 npm install
+npm install -g http-server
+http-server
 node server.js
 ```
