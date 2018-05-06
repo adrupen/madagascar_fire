@@ -16,6 +16,10 @@ npm install -g http-server
 http-server
 node server.js
 ```
+### Live Demo
+
+[https://www.youtube.com/watch?v=NvJHzTWQMtM](https://www.youtube.com/watch?v=NvJHzTWQMtM)
+
 ### Screenshots
 
 ![](https://home.uni-leipzig.de/idiv/fire-report-app/screen1.png)
