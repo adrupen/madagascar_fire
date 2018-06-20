@@ -14,11 +14,12 @@ The performance and impact of Copernicus should be further increased by meaningf
 
 The Madagascar Fire Report App is a ready to use mobile web application that allows park rangers in Madagascar to easily report information about a recent wildfire. The mobile web app provides a very simple and mobile friendly interface, allowing the park ranger to carry out their work in the field. Input parameters are provided as sliders with pictograms for easy understanding and inputting that also allows non-english speakers to use the interface.
 
-Active fire hotspots (last 24hrs, 48hrs and 72hrs) from the NASA’s Fire Information for Resource Management System (FIRMS) can be visualized on the map incl. access to Web Mapping Services (WMS) from GEO providers within the GEO Discovery Access Broker (GEO DAB) - in total 25.225.230 results worldwide (June 2018).
+Active fire hotspots (last 24hrs, 48hrs and 72hrs) from the NASA’s Fire Information for Resource Management System (FIRMS) can be visualized on the map as well Web Mapping Services (WMS) from GEO providers within the GEO Discovery Access Broker (GEO DAB) e.g. the Copernicus Atmosphere Monitoring Service (CAMS) Radiation Data over Africa "JADE".
+In total the Madagascar Fire Report Appp can harvest 25.225.230 national and global WMS (June 2018).
 
-In-situ wildfire report is uploaded to the GEOSS platform, allowing anyone to take part in the information.
+In-situ wildfire report by the park ranger is uploaded to GEOSS, allowing anyone to take part in the information.
 
-The Madagascar Fire Report App not only strengthens international cooperation with GEOSS but also provide accurate information on fire activity in Madagascar, but this real-time monitoring could be used also in other fire-prone regions anywhere in the world.
+The Madagascar Fire Report App not only strengthens international cooperation with GEOSS but also provide accurate information on fire activity in Madagascar. But in fact, this real-time monitoring app could be used also in other fire-prone regions anywhere in the world.
 
 ### To install & run
 ```javascript
