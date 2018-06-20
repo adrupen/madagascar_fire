@@ -380,12 +380,19 @@ var layerSwitcher = L.control.layers(baseLayers, null, {
         }
   }); 
 
- // MODIS active fires last 48 hrs
+ //MODIS active fires last 48 hrs
  var modisfire48 = L.tileLayer.wms('https://firms.modaps.eosdis.nasa.gov/wms/?', {
     layers: 'fires_viirs_48',
     zIndex: 1020,
     format: 'png'
     });
+
+ // CAMS JADE
+ // var modisfire48 = L.tileLayer.wms('http://geoserver.webservice-energy.org/geoserver/cams_jade/wms?', {
+ //    layers: 'CAMS_JADE_monthly_GHI_2005_01',
+ //    zIndex: 1020,
+ //    format: 'png'
+ //    });
 
     $("#modisfire48").click(function() {
       if(document.getElementById('modisfire48').checked){
@@ -822,7 +829,7 @@ for ( var i = 0; i < overlays.length; i++) {
               <div class="panel-heading">
                 <h4 class="panel-title">
                   <a data-toggle="collapse" href="./index.html#properties">
-                    <i class="fa fa-list-alt" style="padding-right:10px"></i>Search GEOSS Datasets
+                    <i class="fa fa-list-alt" style="padding-right:10px"></i>Search Copernicus Data in GEOSS
                   </a>
                 </h4>
               </div>
@@ -926,7 +933,7 @@ for ( var i = 0; i < overlays.length; i++) {
                       
                     </div>
                     <br><br>
-                    <button id="sendBtn">Send</button>
+                    <button id="sendBtn" class="btn btn-default">Send</button>
                   </form>
                 </div>
               </div>
@@ -955,7 +962,7 @@ for ( var i = 0; i < overlays.length; i++) {
           <div style="text-align: center">
             <img src="img/lemur-fire.png" style="margin:10px;width:250px;" title="Madagascar">
             <h5>Biodiversity Observations for a better future</h5><br>
-            <p style="color:#999;font-size:12px">© Christian Langer | Joakim.Adrup</p>
+            <p style="color:#999;font-size:12px">© Christian Langer | Joakim Adrup</p>
           </div>
         </div>
         <div class="modal-footer">
