@@ -1,13 +1,24 @@
-# Madagascar Fire Report app
-Web application for in-situ reports on fires in Madagascar.
+# Wildfire Monitoring and Fire Danger Forecasts in Madagascar
 
-The goal was to provide a ready to use web application that allows park rangers in Madagascar to easily report information about a recent fire.
-The web app provides a very simple and mobile friendly interface, allowing the park ranger to carry out their work in the field.
-Input parameters are provided as sliders with pictograms for easy understanding and inputting that also allows non-english speakers to use the interface.
+Mobile Web application for in-situ reports on wildfires in Madagascar.
 
-In addition park rangers can visualize the recent fires for Madagascar on the map (last 24hrs, 48hrs and 72hrs) and they can display datasets (Web Mapping Services) from GEOSS which might be relevant for their report.
+### Background
 
-Data collected is uploaded to the GEOSS platform, allowing anyone to take part in the information.
+Wildfires continue to present a major risk in many countries. It is estimated that nearly 400 million hectares of natural areas are burnt every year, causing loss of life, tremendous environmentaland economic damage, and contributing to the increase of carbon emissions worldwide.
+
+The Madagascar Fire Report App brings together existing GEOSS information sources at regional and national level to provide a comprehensive view and evaluation of fire patterns and effects at a global level.
+
+The performance and impact of Copernicus should be further increased by meaningfully integrating non-European data and services. This is especially true for necessary in-situ data outside of Europe. For this purpose, international cooperation should be sought, the establishment of which can be supported by the international Group on Earth Observations (GEO).
+
+### About the app
+
+The Madagascar Fire Report App is a ready to use mobile web application that allows park rangers in Madagascar to easily report information about a recent wildfire. The mobile web app provides a very simple and mobile friendly interface, allowing the park ranger to carry out their work in the field. Input parameters are provided as sliders with pictograms for easy understanding and inputting that also allows non-english speakers to use the interface.
+
+Active fire hotspots (last 24hrs, 48hrs and 72hrs) from the NASA’s Fire Information for Resource Management System (FIRMS) can be visualized on the map incl. access to Web Mapping Services (WMS) from GEO providers within the GEO Discovery Access Broker (GEO DAB) - in total 25.225.230 results worldwide (June 2018).
+
+In-situ wildfire report is uploaded to the GEOSS platform, allowing anyone to take part in the information.
+
+The Madagascar Fire Report App not only strengthens international cooperation with GEOSS but also provide accurate information on fire activity in Madagascar, but this real-time monitoring could be used also in other fire-prone regions anywhere in the world.
 
 ### To install & run
 ```javascript
