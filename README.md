@@ -35,7 +35,7 @@ node server.js
 ### Screenshots
 
 ![](https://home.uni-leipzig.de/idiv/fire-report-app/screenshot1.png)
-![](https://home.uni-leipzig.de/idiv/fire-report-app/screenshot2.png)
+![](https://home.uni-leipzig.de/idiv/fire-report-app/screenshot6.png)
 ![](https://home.uni-leipzig.de/idiv/fire-report-app/screenshot3.png)
 ![](https://home.uni-leipzig.de/idiv/fire-report-app/screenshot4.png)
 ![](https://home.uni-leipzig.de/idiv/fire-report-app/screenshot5.png)
